@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -22,6 +24,10 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int productID;
 	
+	@ManyToOne
+	@JoinColumn(name="supplier_id")
+	private Supplier supplier;
+	
 	@NotBlank(message = "Product name cannot be empty")
 	private String productName;
 	
@@ -34,6 +40,14 @@ public class Product {
 	@PositiveOrZero(message = "Quantity cannot be negative")
 	private int quantity;
 	
+	public Supplier getSupplier()
+	{
+		return supplier;
+	}
 	
+	public void setSupplier(Supplier supplier)
+	{
+		this.supplier = supplier;
+	}
 
 }

@@ -11,5 +11,11 @@ import com.shristi.Inventory_web_app.model.Product;
 public interface ProductRepo extends JpaRepository<Product, Integer>{
 	
 	List<Product> findByQuantityLessThanEqual(int quantity);
+	
+	List<Product> findBySupplier_SupplierID(int supplierID);
+	
+	List<Product> findByProductNameContainingIgnoreCase(String productName);
+	
+	List<Product> findByProductCategoryIgnoreCase(String productCategory);
 
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shristi.Inventory_web_app.model.Product;
 import com.shristi.Inventory_web_app.model.Supplier;
 import com.shristi.Inventory_web_app.service.SupplierService;
 
@@ -31,6 +32,13 @@ public class SupplierController {
 	{
 		return service.getSuppliers();
 		
+	}
+	
+	@GetMapping("/{supplierID}/products")
+	public List<Product> getProductsBySupplier(
+	        @PathVariable int supplierID)
+	{
+	    return service.getProductsBySupplier(supplierID);
 	}
 	
 	

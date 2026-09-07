@@ -1,9 +1,14 @@
 package com.shristi.Inventory_web_app.model;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -53,6 +58,18 @@ public class Supplier {
 		this.email = email;
 	}
 	
+	
+	public int getSupplierID()
+	{
+		return supplierID;
+	}
+	
+	public void setSupplierID(int supplierID)
+	{
+		this.supplierID = supplierID;
+	}
+	
+
 	public String getSupplierName()
 	{
 		 return supplierName;
@@ -61,6 +78,19 @@ public class Supplier {
 	public void setSupplierName(String supplierName)
 	{
 		this.supplierName = supplierName;
+	}
+	
+	@OneToMany(mappedBy = "supplier")
+	@JsonIgnore   // the JsonIgnore in here is used to prevent the circular json error Product-> Supplier, Supplier -> Product
+	private List<Product> products;
+	
+	
+	public List<Product> getProducts() {
+	    return products;
+	}
+
+	public void setProducts(List<Product> products) {
+	    this.products = products;
 	}
 	
 	

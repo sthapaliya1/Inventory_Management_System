@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.shristi.Inventory_web_app.model.Product;
 import com.shristi.Inventory_web_app.model.Supplier;
+import com.shristi.Inventory_web_app.repository.ProductRepo;
 import com.shristi.Inventory_web_app.repository.SupplierRepo;
 
 
@@ -15,6 +17,9 @@ public class SupplierService {
 	
 	 @Autowired
 	 SupplierRepo repo;
+	 
+	 @Autowired
+	 ProductRepo productRepo;
 	 
 	 
 	 public List<Supplier> getSuppliers()
@@ -66,4 +71,17 @@ public class SupplierService {
 		 repo.deleteById(supplierID);
 	 }
 	
+	 public List<Product> getProductsBySupplier(int supplierID)
+	 {
+	     repo.findById(supplierID)
+	         .orElseThrow(() ->
+	             new RuntimeException(
+	                 "Supplier with ID " + supplierID + " not found"
+	             )
+	         );
+
+	     return productRepo.findBySupplier_SupplierID(supplierID);
+	 }
+ 
+	 
 }

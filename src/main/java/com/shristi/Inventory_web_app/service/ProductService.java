@@ -1,16 +1,22 @@
 package com.shristi.Inventory_web_app.service;
 
 import java.util.ArrayList;
+import com.shristi.Inventory_web_app.model.Supplier;
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.shristi.Inventory_web_app.exception.InsufficientStockException;
 import com.shristi.Inventory_web_app.exception.ProductNotFoundException;
 import com.shristi.Inventory_web_app.model.Product;
 import com.shristi.Inventory_web_app.repository.ProductRepo;
+import com.shristi.Inventory_web_app.repository.SupplierRepo;
 
 
 @Service // object is created inside the spring container
@@ -20,18 +26,10 @@ public class ProductService {
 	
 	 @Autowired
 	 ProductRepo repo;
+	 
+	 @Autowired
+	 SupplierRepo supplierRepo;
 	
-	
-//	 List<Product> products = new ArrayList<> (Arrays.asList(
-//		        new Product(1, "Dell Laptop", "Laptop", 799.99, 8),
-//		        new Product(2, "Macbook Air M4", "Laptop", 999.99, 5),
-//		        new Product(3, "Mechanical Keyboard", "Accessories", 79.99, 15),
-//		        new Product(4, "Sun Disk 15GB SSD", "Storage", 89.99, 18),
-//		        new Product(5, "USB C Hub", "Accessories", 39.99, 30),
-//		        new Product(6, "Sony Headphones", "Audio", 129.99, 9),
-//		        new Product(7, "USB C Charger", "Accessories", 24.99, 35),
-//		        new Product(8, "JB Bluetooth Speaker", "Audio", 79.99, 8)
-//		    ));
 
 	public List<Product> getProducts()
 	{
@@ -74,19 +72,6 @@ public class ProductService {
 		
 		repo.save(prod);
 		
-//		int index=0;
-//		
-//		repo.save(null);
-//		for(int i=0; i<products.size();i++)
-//		{
-//			if(products.get(i).getProductID() == prod.getProductID())
-//			
-//				index=i;
-//			
-//			products.set(index, prod);
-//			
-//		}
-		
 		
 	}
 
@@ -101,18 +86,6 @@ public class ProductService {
 	            );
 		
 		repo.deleteById(prodID);
-		
-//		int index=0;
-//		
-//		for(int i=0; i<products.size();i++)
-//		{
-//			if(products.get(i).getProductID() == prodID)
-//			
-//				index=i;
-//			
-//			products.remove(index);
-//			
-//		}	
 		
 	}
 	
@@ -165,10 +138,69 @@ public class ProductService {
 		return repo.save(product);
 	}
 	
+	
 	public List<Product> getLowStockProducts(int threshold) {
 	    return repo.findByQuantityLessThanEqual(threshold);
 	}
 	
+	
+	public Product assignSupplier(int productID, int supplierID)
+	{
+	    Product product = repo.findById(productID)
+	            .orElseThrow(() ->
+	                new ProductNotFoundException(
+	                    "Product with ID " + productID + " not found"
+	                )
+	            );
+
+	    Supplier supplier = supplierRepo.findById(supplierID).orElseThrow(() -> new RuntimeException("Supplier with ID " + supplierID + " not found"));
+
+	    product.setSupplier(supplier);
+
+	    return repo.save(product);
+	}
+	
+	// search products by name
+	public List<Product> searchProductsByName(String name)
+	{
+	    return repo.findByProductNameContainingIgnoreCase(name);
+	}
+	
+	// Filter products by category
+	public List<Product> getProductsByCategory(String category)
+	{
+	    return repo.findByProductCategoryIgnoreCase(category);
+	}
+	
+	public Page<Product> getProductsByPage(int page, int size)
+	{
+	    Pageable pageable = PageRequest.of(page, size);
+
+	    return repo.findAll(pageable);
+	}
+	
+	
+	public Page<Product> getProductsByPage(
+	        int page,
+	        int size,
+	        String sortBy,
+	        String direction)
+	{
+	    Sort sort;
+
+	    if(direction.equalsIgnoreCase("desc"))
+	    {
+	        sort = Sort.by(sortBy).descending();
+	    }
+	    else
+	    {
+	        sort = Sort.by(sortBy).ascending();
+	    }
+
+	    Pageable pageable = PageRequest.of(page, size, sort);
+
+	    return repo.findAll(pageable);
+	}
 	
 	
 }
