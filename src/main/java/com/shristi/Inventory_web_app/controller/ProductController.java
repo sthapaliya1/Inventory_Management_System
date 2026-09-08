@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shristi.Inventory_web_app.dto.ProductRequestDTO;
 import com.shristi.Inventory_web_app.model.Product;
 import com.shristi.Inventory_web_app.service.ProductService;
 
@@ -48,15 +49,15 @@ public class ProductController {
 	
 	
 	@PostMapping("/products")
-	public void addProduct(@Valid @RequestBody Product prod)
+	public void addProduct(@Valid @RequestBody ProductRequestDTO dto)
 	{
-		service.addProduct(prod);
+		service.addProduct(dto);
 	}
 	
-	@PutMapping("/products")
-	public void updateProduct(@Valid @RequestBody Product prod)
+	@PutMapping("/products/{productID}")
+	public void updateProduct(@PathVariable("productID") int productID, @Valid @RequestBody ProductRequestDTO dto)
 	{
-		service.updateProduct(prod);
+		service.updateProduct(productID, dto);
 	}
 	
 	@DeleteMapping("/products/{prodID}")

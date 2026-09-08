@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.shristi.Inventory_web_app.dto.ProductRequestDTO;
 import com.shristi.Inventory_web_app.exception.InsufficientStockException;
 import com.shristi.Inventory_web_app.exception.ProductNotFoundException;
 import com.shristi.Inventory_web_app.model.Product;
@@ -50,29 +51,37 @@ public class ProductService {
 	
 	
 	//  the response addProduct goes from the server to the client:
-	public void addProduct(Product prod)
+	public void addProduct(ProductRequestDTO dto)
 	{
-		repo.save(prod);
+		Product product = new Product();
+		
+		product.setProductName(dto.getProductName());
+		product.setProductCategory(dto.getProductCategory());
+		product.setPrice(dto.getPrice());		
+		product.setQuantity(dto.getQuantity());
+		
+		repo.save(product);
 		
 	}
 
 
-	public void updateProduct(Product prod) {
-		
-		
-		
-		repo.findById(prod.getProductID())
-        .orElseThrow(() ->
-            new ProductNotFoundException(
-                "Product with ID "
-                + prod.getProductID()
-                + " not found"
-            )
-        );
-		
-		repo.save(prod);
-		
-		
+	public void updateProduct(int productID, ProductRequestDTO dto) {
+
+	    Product product = repo.findById(productID)
+	            .orElseThrow(() ->
+	                new ProductNotFoundException(
+	                    "Product with ID "
+	                    + productID
+	                    + " not found"
+	                )
+	            );
+
+	    product.setProductName(dto.getProductName());
+	    product.setProductCategory(dto.getProductCategory());
+	    product.setPrice(dto.getPrice());
+	    product.setQuantity(dto.getQuantity());
+
+	    repo.save(product);
 	}
 
 
