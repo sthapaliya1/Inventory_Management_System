@@ -83,4 +83,12 @@ public class GlobalExceptionHandler {
 	            HttpStatus.BAD_REQUEST
 	    );
 	}
+	
+	
+	@ExceptionHandler(InventoryNotFoundException.class)
+	public ResponseEntity<String> handleInventoryNotFound(
+	        InventoryNotFoundException ex)
+	{
+	    return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+	}
 }

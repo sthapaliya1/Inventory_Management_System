@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.shristi.Inventory_web_app.dto.SupplierRequestDTO;
 import com.shristi.Inventory_web_app.model.Product;
 import com.shristi.Inventory_web_app.model.Supplier;
 import com.shristi.Inventory_web_app.repository.ProductRepo;
@@ -33,36 +34,35 @@ public class SupplierService {
 	 }
 	
 	 
-	 public Supplier addSupplier(Supplier supplier)
+	 
+	 
+	 public Supplier addSupplier(SupplierRequestDTO dto)
 	 {
+		 Supplier supplier = new Supplier();
+		 
+		 
+		 supplier.setSupplierName(dto.getSupplierName());
+		 supplier.setEmail(dto.getEmail());
+		 supplier.setPhone(dto.getPhone());
+		 supplier.setAddress(dto.getAddress());
+				
 		 return repo.save(supplier);
 	 }
+	 
 	
-	 public Supplier updateSupplier(
-	            int supplierID,
-	            Supplier supplier)
+	 public Supplier updateSupplier(int supplierID, SupplierRequestDTO dto)
 	    {
-	        Supplier existingSupplier =
-	                repo.findById(supplierID).orElse(null);
-
-	        if (existingSupplier != null)
-	        {
-	            existingSupplier.setSupplierName(
-	                    supplier.getSupplierName());
-
-	            existingSupplier.setEmail(
-	                    supplier.getEmail());
-
-	            existingSupplier.setPhone(
-	                    supplier.getPhone());
-
-	            existingSupplier.setAddress(
-	                    supplier.getAddress());
-
-	            return repo.save(existingSupplier);
-	        }
-
-	        return null;
+	       Supplier supplier = repo.findById(supplierID)
+	    		   .orElseThrow(() -> 
+	    		   new RuntimeException("Supplier with ID " 
+	    				   + supplierID + "not found") );
+	       
+	       supplier.setSupplierName(dto.getSupplierName());
+	       supplier.setEmail(dto.getEmail());
+	       supplier.setPhone(dto.getPhone());
+	       supplier.setAddress(dto.getAddress());
+	       
+	       return repo.save(supplier);
 	    }
 	 
 	
@@ -70,6 +70,7 @@ public class SupplierService {
 	 {
 		 repo.deleteById(supplierID);
 	 }
+	 
 	
 	 public List<Product> getProductsBySupplier(int supplierID)
 	 {
